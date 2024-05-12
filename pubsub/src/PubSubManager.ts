@@ -22,12 +22,31 @@ export class PubSubManager {
 
     public userSubscribe(userId: string, stock: string) {
 
+        if (!this.subscription.has(stock)) {
+            this.subscription.set(stock, [])
+        }
+        this.subscription.get(stock)?.push(userId);
+        if (this.subscription.get(stock)?.length === 1) {
+            this.redisClient.subscribe(stock, (message) => {
+                this.handleMessage(stock,message)
+            })
+        }
     }
-    removeUserFromStock(userId: string, stockTicker: string) {
+    public userUnSubscribe(userId: string, stock: string) {
+        this.subscription.set(stock, this.subscription.get(stock)?.filter((sub) => sub !== userId) || [])
+        if (this.subscription.get(stock)?.length === 0) {
+            this.redisClient.unsubscribe(stock)
+            console.log(`UnSubscribed to Redis channel: ${stock}`);
+
+        }
+    }
+
+    private handleMessage(stock: string, message: string,) {
+        console.log(`Message received on channel ${stock}: ${message}`);
+        this.subscription.get(stock)?.forEach((sub) => {
+            console.log(`Sending message to user: ${sub}`);
+        })
 
     }
 
-    forwardMessageToUser(userId: string, stockTicker: string, price: string) {
-
-    }
 }

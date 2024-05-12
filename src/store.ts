@@ -42,4 +42,3 @@ return this.games;
     }
 }
 
-export const gameManager = GameManager.getInstance()

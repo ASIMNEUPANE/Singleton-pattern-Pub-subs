@@ -1,10 +1,10 @@
-import { gameManager } from "./store";
+import { GameManager } from "./store";
 import { startLogger } from "./logger";
 
 startLogger();
 setInterval(() => {
 
-    gameManager.addGame(
+    GameManager.getInstance().addGame(
        Math.random().toString(),
       "Alice",
        "Bob",
